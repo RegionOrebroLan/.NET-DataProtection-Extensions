@@ -1,0 +1,27 @@
+@model Alert
+@if(Model != null)
+{
+	<div class="alert alert-@Model.Mode.ToString().ToLowerInvariant() alert-dismissible fade show" role="alert">
+		@if(!string.IsNullOrEmpty(Model.Heading))
+		{
+			<h2 class="h4">@Model.Heading</h2>
+		}
+		@if(!string.IsNullOrEmpty(Model.Information))
+		{
+			<p>@Model.Information</p>
+		}
+		@if(Model.Details != null && Model.Details.Any())
+		{
+			<ul>
+				@foreach(var detail in Model.Details)
+				{
+					<li>@detail</li>
+				}
+
+			</ul>
+		}
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+}

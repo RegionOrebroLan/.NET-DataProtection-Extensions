@@ -1,0 +1,12 @@
+@model ProtectForm
+<form asp-action="Protect">
+	<div class="form-group">
+		<label asp-for="Purpose">Purpose</label>
+		<input class="form-control" asp-for="Purpose" placeholder="Enter the purpose or use default.">
+	</div>
+	<div class="form-group">
+		<label asp-for="TextToProtect">Text to protect (required)</label>
+		<input class="form-control" asp-for="TextToProtect" placeholder="Enter the text you want to protect/encrypt.">
+	</div>
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>

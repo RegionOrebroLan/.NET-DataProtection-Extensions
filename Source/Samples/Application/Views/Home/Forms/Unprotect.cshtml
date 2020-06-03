@@ -1,0 +1,12 @@
+@model UnprotectForm
+<form asp-action="Unprotect">
+	<div class="form-group">
+		<label asp-for="Purpose">Purpose</label>
+		<input class="form-control" asp-for="Purpose" placeholder="Enter the purpose or use default.">
+	</div>
+	<div class="form-group">
+		<label asp-for="TextToUnprotect">Encrypted text to unprotect (required)</label>
+		<input class="form-control" asp-for="TextToUnprotect" placeholder="Enter the encrypted text you want to unprotect/decrypt.">
+	</div>
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>

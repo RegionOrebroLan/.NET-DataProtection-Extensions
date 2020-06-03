@@ -1,0 +1,88 @@
+@model HomeViewModel
+@{ ViewBag.Heading = "Home"; }
+<h1 class="h3">@ViewBag.Heading</h1>
+<div class="card">
+	<div class="card-header" id="environment-header">
+		<h2 class="mb-0">
+			<button aria-controls="environment-collapse" aria-expanded="true" class="btn btn-link" data-target="#environment-collapse" data-toggle="collapse">
+				Environment
+			</button>
+		</h2>
+	</div>
+	<div aria-labelledby="environment-header" class="collapse show" id="environment-collapse">
+		<div class="card-body">
+			<ul>
+				<li>Machine-name: <strong>@Environment.MachineName</strong></li>
+				<li>Data-protection-provider: <strong>@Model.DataProtectionProvider.GetType()</strong></li>
+				<li>Data-protector: <strong>@Model.DataProtector.GetType()</strong></li>
+				<li>Default-purpose: <strong>@Model.DefaultPurpose</strong></li>
+				<li>Key-management xml-encryptor: <strong>@(Model.KeyManagementOptions.Value.XmlEncryptor?.GetType().ToString() ?? "null")</strong></li>
+				<li>Key-management xml-repository: <strong>@(Model.KeyManagementOptions.Value.XmlRepository?.GetType().ToString() ?? "null")</strong></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="card">
+	<div class="card-header" id="protect-header">
+		<h2 class="mb-0">
+			<button aria-controls="protect-collapse" aria-expanded="true" class="btn btn-link" data-target="#protect-collapse" data-toggle="collapse">
+				Protect
+			</button>
+		</h2>
+	</div>
+	<div aria-labelledby="protect-header" class="collapse show" id="protect-collapse">
+		<div class="card-body">
+			<partial model="@Model.ProtectAlert" name="~/Views/Shared/Alert.cshtml" />
+			<partial model="@Model.ProtectForm" name="~/Views/Home/Forms/Protect.cshtml" />
+		</div>
+	</div>
+</div>
+<div class="card">
+	<div class="card-header" id="unprotect-header">
+		<h2 class="mb-0">
+			<button aria-controls="unprotect-collapse" aria-expanded="true" class="btn btn-link" data-target="#unprotect-collapse" data-toggle="collapse">
+				Unprotect
+			</button>
+		</h2>
+	</div>
+	<div aria-labelledby="unprotect-header" class="collapse show" id="unprotect-collapse">
+		<div class="card-body">
+			<partial model="@Model.UnprotectAlert" name="~/Views/Shared/Alert.cshtml" />
+			<partial model="@Model.UnprotectForm" name="~/Views/Home/Forms/Unprotect.cshtml" />
+		</div>
+	</div>
+</div>
+<div class="card">
+	<div class="card-header" id="protections-header">
+		<h2 class="mb-0">
+			<button aria-controls="protections-collapse" aria-expanded="true" class="btn btn-link" data-target="#protections-collapse" data-toggle="collapse">
+				Protections
+			</button>
+		</h2>
+	</div>
+	<div aria-labelledby="protections-header" class="collapse show" id="protections-collapse">
+		<div class="card-body">
+			@if(Model.Protections.Any())
+			{
+				<ul>
+					@foreach(var protection in Model.Protections)
+					{
+						<li>
+							<h3>@protection.Text</h3>
+							<ul>
+								<li>Purpose: <strong>@protection.Purpose</strong></li>
+								<li>Protected value: <strong>@protection.ProtectedValue</strong></li>
+							</ul>
+						</li>
+					}
+				</ul>
+			}
+			else
+			{
+				<p>
+					<i>No protections yet</i>
+				</p>
+			}
+		</div>
+	</div>
+</div>

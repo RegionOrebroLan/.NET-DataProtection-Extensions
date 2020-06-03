@@ -1,0 +1,5 @@
+<Project>
+	<PropertyGroup>
+		<AssemblyName>RegionOrebroLan.DataProtection.IntegrationTests</AssemblyName>
+	</PropertyGroup>
+</Project>
