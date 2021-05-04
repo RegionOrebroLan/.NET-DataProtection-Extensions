@@ -23,7 +23,7 @@
 	const imagesDirectoryName = "Images";
 	const scriptsDirectoryName = "Scripts";
 	const styleDirectoryName = "Style";
-	
+
 	const iconsSourceDirectory = path.join(styleDirectoryName, iconsDirectoryName);
 	const imagesDestinationDirectory = path.join(destinationRootDirectoryName, styleDirectoryName, imagesDirectoryName);
 	const imagesSourceDirectory = path.join(styleDirectoryName, imagesDirectoryName);
@@ -36,7 +36,8 @@
 	async function buildScriptBundle() {
 		console.log("Building script-bundle...");
 
-		deleteIfExists(scriptsDestinationDirectory);
+		//deleteIfExists(scriptsDestinationDirectory);
+		del(replaceBackSlashWithForwardSlash(path.join(scriptsDestinationDirectory, "**/*.js")));
 
 		var bundleName = "Site.js";
 
@@ -55,7 +56,7 @@
 		deleteIfExists(spriteDestinationDirectory);
 
 		const spriteFileName = "sprite.svg";
-		
+
 		return gulp.src(replaceBackSlashWithForwardSlash(path.join(iconsSourceDirectory, "**/*.svg")))
 			.pipe(plumber())
 			.pipe(svgSrite({
@@ -68,7 +69,7 @@
 				}
 			}))
 			.on("error",
-				function(error) {
+				function (error) {
 					if (!error)
 						return;
 
@@ -96,10 +97,18 @@
 	}
 
 	function clean(done) {
-		console.log(`Deleting directory "${scriptsDestinationDirectory}"...`);
-		console.log(`Deleting directory "${styleDestinationDirectory}"...`);
+		const excludePattern = ".gitkeep";
+		const pattern = "**/*";
 
-		del.sync([scriptsDestinationDirectory, styleDestinationDirectory]);
+		const scriptsExcludePattern = "!" + replaceBackSlashWithForwardSlash(path.join(scriptsDestinationDirectory, excludePattern));
+		const scriptsPattern = replaceBackSlashWithForwardSlash(path.join(scriptsDestinationDirectory, pattern));
+		console.log(`Cleaning script-files...`);
+		del.sync([scriptsPattern, scriptsExcludePattern]);
+
+		const styleExcludePattern = "!" + replaceBackSlashWithForwardSlash(path.join(styleDestinationDirectory, excludePattern));
+		const stylePattern = replaceBackSlashWithForwardSlash(path.join(styleDestinationDirectory, pattern));
+		console.log(`Cleaning style-files...`);
+		del.sync([stylePattern, styleExcludePattern]);
 
 		done();
 	};
@@ -115,7 +124,7 @@
 
 	function createRollupInputOptions(minify) {
 		const plugins = [
-			rollupNodeResolver(),
+			rollupNodeResolver.nodeResolve(),
 			rollupCommonJs(),
 			rollupTypescript()
 		];
@@ -157,10 +166,9 @@
 		};
 	}
 
-	function deleteIfExists(pathToDelete)
-	{
+	function deleteIfExists(pathToDelete) {
 		if (fileSystem.existsSync(pathToDelete))
-			del.sync(pathToDelete, {force: true});
+			del.sync(pathToDelete, { force: true });
 	}
 
 	function replaceBackSlashWithForwardSlash(value) {
@@ -199,8 +207,8 @@
 		const patterns = [
 			replaceBackSlashWithForwardSlash(path.join(scriptsSourceDirectory, "**/*.js")),
 			replaceBackSlashWithForwardSlash(path.join(scriptsSourceDirectory, "**/*.ts"))
-		]; 
-		
+		];
+
 		gulp.watch(patterns, buildScriptBundle);
 	}
 
@@ -220,7 +228,7 @@
 	gulp.task("build-style-sheets", buildStyleSheets);
 
 	gulp.task("clean", gulp.series(clean));
-	
+
 	gulp.task("copy-images", gulp.series(copyImages, watchImages));
 
 	gulp.task("default", gulp.parallel(buildScriptBundle, buildSprite, buildStyleSheets, copyImages));

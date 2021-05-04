@@ -1,0 +1,56 @@
+{
+	"profiles": {
+		"Default-protection": {
+			"applicationUrl": "https://localhost:5001;http://localhost:5000",
+			"commandName": "Project",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Default",
+				"ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
+			},
+			"launchBrowser": true
+		},
+		"Azure-protection": {
+			"applicationUrl": "https://localhost:5001;http://localhost:5000",
+			"commandName": "Project",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Azure",
+				"ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
+			},
+			"launchBrowser": true
+		},
+		"FileSystem-protection": {
+			"applicationUrl": "https://localhost:5001;http://localhost:5000",
+			"commandName": "Project",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "FileSystem",
+				"ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
+			},
+			"launchBrowser": true
+		},
+		"Redis-protection": {
+			"applicationUrl": "https://localhost:5001;http://localhost:5000",
+			"commandName": "Project",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Redis",
+				"ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
+			},
+			"launchBrowser": true
+		},
+		"SqlServer-protection": {
+			"applicationUrl": "https://localhost:5001;http://localhost:5000",
+			"commandName": "Project",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "SqlServer",
+				"ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
+			},
+			"launchBrowser": true
+		},
+		"Docker": {
+			"commandName": "Docker",
+			"launchBrowser": true,
+			"launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+			"publishAllPorts": true,
+			"useSSL": true
+		}
+	}
+}

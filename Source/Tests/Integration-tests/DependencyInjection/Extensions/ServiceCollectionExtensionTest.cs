@@ -42,56 +42,6 @@ namespace RegionOrebroLan.DataProtection.IntegrationTests.DependencyInjection.Ex
 		#region Methods
 
 		[TestMethod]
-		public void AddDataProtection_Database_Test()
-		{
-			this.DatabaseCleanup();
-
-			AppDomain.CurrentDomain.SetData("DataDirectory", this.DataDirectoryPath);
-
-			var configuration = Global.CreateConfiguration("appsettings.json", "appsettings.Database.json");
-
-			var services = Global.CreateServices(configuration);
-
-			var numberOfServicesBefore = services.Count;
-
-			services.AddDataProtection(Global.CreateCertificateResolver(), configuration, Global.HostEnvironment, new InstanceFactory());
-
-			Assert.AreEqual(31, services.Count - numberOfServicesBefore);
-
-			var serviceProvider = services.BuildServiceProvider();
-
-			var dataProtectionOptions = serviceProvider.GetRequiredService<ExtendedDataProtectionOptions>();
-
-			dataProtectionOptions.Use(new ApplicationBuilder(serviceProvider));
-
-			Thread.Sleep(1000);
-
-			var databaseOptions = (DatabaseOptions) dataProtectionOptions;
-
-			var databaseManager = serviceProvider.GetRequiredService<IDatabaseManagerFactory>().Create(databaseOptions.ProviderName);
-
-			Assert.IsTrue(databaseManager.DatabaseExists(configuration.GetConnectionString(databaseOptions.ConnectionStringName)));
-
-			var keyManagementOptions = serviceProvider.GetRequiredService<IOptions<KeyManagementOptions>>();
-
-			var genericXmlRepositoryType = keyManagementOptions.Value.XmlRepository.GetType().GetGenericTypeDefinition();
-			Assert.AreEqual(typeof(EntityFrameworkCoreXmlRepository<>), genericXmlRepositoryType);
-
-			var xmlEncryptorType = keyManagementOptions.Value.XmlEncryptor.GetType();
-			Assert.AreEqual(typeof(CertificateXmlEncryptor), xmlEncryptorType);
-
-			const string value = "Test";
-			var dataProtector = serviceProvider.GetRequiredService<IDataProtectionProvider>().CreateProtector("Test");
-			var protectedValue = dataProtector.Protect(value);
-			var unprotectedValue = dataProtector.Unprotect(protectedValue);
-			Assert.AreEqual(value, unprotectedValue);
-
-			AppDomain.CurrentDomain.SetData("DataDirectory", null);
-
-			this.DatabaseCleanup();
-		}
-
-		[TestMethod]
 		public void AddDataProtection_FileSystem_Test()
 		{
 			this.FileSystemCleanup();
@@ -126,13 +76,63 @@ namespace RegionOrebroLan.DataProtection.IntegrationTests.DependencyInjection.Ex
 			var unprotectedValue = dataProtector.Unprotect(protectedValue);
 			Assert.AreEqual(value, unprotectedValue);
 
-			var fileSystemOptions = (FileSystemOptions) dataProtectionOptions;
+			var fileSystemOptions = (FileSystemOptions)dataProtectionOptions;
 			var directoryPath = Path.Combine(Global.ProjectDirectoryPath, fileSystemOptions.Path);
 			Assert.IsTrue(Directory.Exists(directoryPath));
 
 			this.FileSystemCleanup();
 
 			Assert.IsFalse(Directory.Exists(directoryPath));
+		}
+
+		[TestMethod]
+		public void AddDataProtection_SqlServer_Test()
+		{
+			this.DatabaseCleanup();
+
+			AppDomain.CurrentDomain.SetData("DataDirectory", this.DataDirectoryPath);
+
+			var configuration = Global.CreateConfiguration("appsettings.json", "appsettings.SqlServer.json");
+
+			var services = Global.CreateServices(configuration);
+
+			var numberOfServicesBefore = services.Count;
+
+			services.AddDataProtection(Global.CreateCertificateResolver(), configuration, Global.HostEnvironment, new InstanceFactory());
+
+			Assert.AreEqual(31, services.Count - numberOfServicesBefore);
+
+			var serviceProvider = services.BuildServiceProvider();
+
+			var dataProtectionOptions = serviceProvider.GetRequiredService<ExtendedDataProtectionOptions>();
+
+			dataProtectionOptions.Use(new ApplicationBuilder(serviceProvider));
+
+			Thread.Sleep(1000);
+
+			var databaseOptions = (DatabaseOptions)dataProtectionOptions;
+
+			var databaseManager = serviceProvider.GetRequiredService<IDatabaseManagerFactory>().Create(databaseOptions.ProviderName);
+
+			Assert.IsTrue(databaseManager.DatabaseExists(configuration.GetConnectionString(databaseOptions.ConnectionStringName)));
+
+			var keyManagementOptions = serviceProvider.GetRequiredService<IOptions<KeyManagementOptions>>();
+
+			var genericXmlRepositoryType = keyManagementOptions.Value.XmlRepository.GetType().GetGenericTypeDefinition();
+			Assert.AreEqual(typeof(EntityFrameworkCoreXmlRepository<>), genericXmlRepositoryType);
+
+			var xmlEncryptorType = keyManagementOptions.Value.XmlEncryptor.GetType();
+			Assert.AreEqual(typeof(CertificateXmlEncryptor), xmlEncryptorType);
+
+			const string value = "Test";
+			var dataProtector = serviceProvider.GetRequiredService<IDataProtectionProvider>().CreateProtector("Test");
+			var protectedValue = dataProtector.Protect(value);
+			var unprotectedValue = dataProtector.Unprotect(protectedValue);
+			Assert.AreEqual(value, unprotectedValue);
+
+			AppDomain.CurrentDomain.SetData("DataDirectory", null);
+
+			this.DatabaseCleanup();
 		}
 
 		[SuppressMessage("Design", "CA1031:Do not catch general exception types")]

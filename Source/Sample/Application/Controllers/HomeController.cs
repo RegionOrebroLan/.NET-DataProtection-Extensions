@@ -46,6 +46,9 @@ namespace Application.Controllers
 
 		protected internal virtual async Task<Alert> CreateExceptionAlertAsync(Exception exception)
 		{
+			if(exception == null)
+				throw new ArgumentNullException(nameof(exception));
+
 			return await Task.FromResult(new Alert
 			{
 				Heading = "Error",
@@ -96,6 +99,9 @@ namespace Application.Controllers
 		[ValidateAntiForgeryToken]
 		public virtual async Task<IActionResult> Protect(ProtectForm form)
 		{
+			if(form == null)
+				throw new ArgumentNullException(nameof(form));
+
 			var model = await this.CreateModelAsync();
 
 			if(this.ModelState.IsValid)
@@ -132,6 +138,9 @@ namespace Application.Controllers
 		[ValidateAntiForgeryToken]
 		public virtual async Task<IActionResult> Unprotect(UnprotectForm form)
 		{
+			if(form == null)
+				throw new ArgumentNullException(nameof(form));
+
 			var model = await this.CreateModelAsync();
 
 			if(this.ModelState.IsValid)
