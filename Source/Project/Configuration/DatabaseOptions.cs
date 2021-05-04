@@ -1,5 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RegionOrebroLan.DataProtection.Data;
@@ -16,6 +17,27 @@ namespace RegionOrebroLan.DataProtection.Configuration
 		#endregion
 
 		#region Methods
+
+		public override void Add(IDataProtectionBuilder builder)
+		{
+			try
+			{
+				if(builder == null)
+					throw new ArgumentNullException(nameof(builder));
+
+				this.AddInternal(builder);
+
+				builder.PersistKeysToDbContext<DataProtectionContext>();
+
+				base.Add(builder);
+			}
+			catch(Exception exception)
+			{
+				throw new InvalidOperationException($"Could not add data-protection by database for options of type \"{this.GetType()}\".", exception);
+			}
+		}
+
+		protected internal abstract void AddInternal(IDataProtectionBuilder builder);
 
 		public override void Use(IApplicationBuilder builder)
 		{

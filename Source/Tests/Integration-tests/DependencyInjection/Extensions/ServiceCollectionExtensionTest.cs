@@ -34,6 +34,49 @@ namespace IntegrationTests.DependencyInjection.Extensions
 
 		#region Methods
 
+		protected internal virtual void AddDataProtection_Database_Test(string environment)
+		{
+			AppDomain.CurrentDomain.SetData("DataDirectory", this.DataDirectoryPath);
+
+			var configuration = Global.CreateConfiguration("appsettings.json", $"appsettings.{environment}.json");
+
+			var services = Global.CreateServices(configuration);
+
+			var numberOfServicesBefore = services.Count;
+
+			services.AddDataProtection(Global.CreateCertificateResolver(), configuration, Global.HostEnvironment, new InstanceFactory());
+
+			Assert.AreEqual(25, services.Count - numberOfServicesBefore);
+
+			var serviceProvider = services.BuildServiceProvider();
+
+			this.DatabaseCleanup(serviceProvider);
+
+			var dataProtectionOptions = serviceProvider.GetRequiredService<ExtendedDataProtectionOptions>();
+
+			dataProtectionOptions.Use(new ApplicationBuilder(serviceProvider));
+
+			Thread.Sleep(1000);
+
+			var keyManagementOptions = serviceProvider.GetRequiredService<IOptions<KeyManagementOptions>>();
+
+			var genericXmlRepositoryType = keyManagementOptions.Value.XmlRepository.GetType().GetGenericTypeDefinition();
+			Assert.AreEqual(typeof(EntityFrameworkCoreXmlRepository<>), genericXmlRepositoryType);
+
+			var xmlEncryptorType = keyManagementOptions.Value.XmlEncryptor.GetType();
+			Assert.AreEqual(typeof(CertificateXmlEncryptor), xmlEncryptorType);
+
+			const string value = "Test";
+			var dataProtector = serviceProvider.GetRequiredService<IDataProtectionProvider>().CreateProtector("Test");
+			var protectedValue = dataProtector.Protect(value);
+			var unprotectedValue = dataProtector.Unprotect(protectedValue);
+			Assert.AreEqual(value, unprotectedValue);
+
+			this.DatabaseCleanup(serviceProvider);
+
+			AppDomain.CurrentDomain.SetData("DataDirectory", null);
+		}
+
 		[TestMethod]
 		public void AddDataProtection_FileSystem_Test()
 		{
@@ -79,47 +122,15 @@ namespace IntegrationTests.DependencyInjection.Extensions
 		}
 
 		[TestMethod]
+		public void AddDataProtection_Sqlite_Test()
+		{
+			this.AddDataProtection_Database_Test("Sqlite");
+		}
+
+		[TestMethod]
 		public void AddDataProtection_SqlServer_Test()
 		{
-			AppDomain.CurrentDomain.SetData("DataDirectory", this.DataDirectoryPath);
-
-			var configuration = Global.CreateConfiguration("appsettings.json", "appsettings.SqlServer.json");
-
-			var services = Global.CreateServices(configuration);
-
-			var numberOfServicesBefore = services.Count;
-
-			services.AddDataProtection(Global.CreateCertificateResolver(), configuration, Global.HostEnvironment, new InstanceFactory());
-
-			Assert.AreEqual(25, services.Count - numberOfServicesBefore);
-
-			var serviceProvider = services.BuildServiceProvider();
-
-			this.DatabaseCleanup(serviceProvider);
-
-			var dataProtectionOptions = serviceProvider.GetRequiredService<ExtendedDataProtectionOptions>();
-
-			dataProtectionOptions.Use(new ApplicationBuilder(serviceProvider));
-
-			Thread.Sleep(1000);
-
-			var keyManagementOptions = serviceProvider.GetRequiredService<IOptions<KeyManagementOptions>>();
-
-			var genericXmlRepositoryType = keyManagementOptions.Value.XmlRepository.GetType().GetGenericTypeDefinition();
-			Assert.AreEqual(typeof(EntityFrameworkCoreXmlRepository<>), genericXmlRepositoryType);
-
-			var xmlEncryptorType = keyManagementOptions.Value.XmlEncryptor.GetType();
-			Assert.AreEqual(typeof(CertificateXmlEncryptor), xmlEncryptorType);
-
-			const string value = "Test";
-			var dataProtector = serviceProvider.GetRequiredService<IDataProtectionProvider>().CreateProtector("Test");
-			var protectedValue = dataProtector.Protect(value);
-			var unprotectedValue = dataProtector.Unprotect(protectedValue);
-			Assert.AreEqual(value, unprotectedValue);
-
-			this.DatabaseCleanup(serviceProvider);
-
-			AppDomain.CurrentDomain.SetData("DataDirectory", null);
+			this.AddDataProtection_Database_Test("SqlServer");
 		}
 
 		protected internal virtual void DatabaseCleanup(IServiceProvider serviceProvider)

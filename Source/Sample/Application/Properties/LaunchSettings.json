@@ -36,6 +36,15 @@
 			},
 			"launchBrowser": true
 		},
+		"Sqlite-protection": {
+			"applicationUrl": "https://localhost:5001;http://localhost:5000",
+			"commandName": "Project",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Sqlite",
+				"ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
+			},
+			"launchBrowser": true
+		},
 		"SqlServer-protection": {
 			"applicationUrl": "https://localhost:5001;http://localhost:5000",
 			"commandName": "Project",

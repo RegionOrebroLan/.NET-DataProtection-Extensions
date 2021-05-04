@@ -1,5 +1,4 @@
 using System;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,31 +12,20 @@ namespace RegionOrebroLan.DataProtection.Configuration
 	{
 		#region Methods
 
-		public override void Add(IDataProtectionBuilder builder)
+		protected internal override void AddInternal(IDataProtectionBuilder builder)
 		{
-			try
-			{
-				if(builder == null)
-					throw new ArgumentNullException(nameof(builder));
+			if(builder == null)
+				throw new ArgumentNullException(nameof(builder));
 
-				builder.Services.AddDbContext<DataProtectionContext, SqlServerDataProtectionContext>(optionsBuilder =>
-					optionsBuilder.UseSqlServer(
-						this.GetConnectionString(builder.Configuration),
-						options =>
-						{
-							if(this.MigrationsAssembly != null)
-								options.MigrationsAssembly(this.MigrationsAssembly);
-						}
-					));
-
-				builder.PersistKeysToDbContext<DataProtectionContext>();
-
-				base.Add(builder);
-			}
-			catch(Exception exception)
-			{
-				throw new InvalidOperationException($"Could not add data-protection by database for options of type \"{this.GetType()}\".", exception);
-			}
+			builder.Services.AddDbContext<DataProtectionContext, SqlServerDataProtectionContext>(optionsBuilder =>
+				optionsBuilder.UseSqlServer(
+					this.GetConnectionString(builder.Configuration),
+					options =>
+					{
+						if(this.MigrationsAssembly != null)
+							options.MigrationsAssembly(this.MigrationsAssembly);
+					}
+				));
 		}
 
 		protected internal virtual string GetConnectionString(IConfiguration configuration)
