@@ -48,7 +48,7 @@ namespace RegionOrebroLan.DataProtection.IntegrationTests.DependencyInjection.Ex
 
 			AppDomain.CurrentDomain.SetData("DataDirectory", this.DataDirectoryPath);
 
-			var configuration = Global.CreateConfiguration("AppSettings.json", "AppSettings.Database.json");
+			var configuration = Global.CreateConfiguration("appsettings.json", "appsettings.Database.json");
 
 			var services = Global.CreateServices(configuration);
 
@@ -96,7 +96,7 @@ namespace RegionOrebroLan.DataProtection.IntegrationTests.DependencyInjection.Ex
 		{
 			this.FileSystemCleanup();
 
-			var configuration = Global.CreateConfiguration("AppSettings.json", "AppSettings.FileSystem.json");
+			var configuration = Global.CreateConfiguration("appsettings.json", "appsettings.FileSystem.json");
 
 			var services = Global.CreateServices(configuration);
 
