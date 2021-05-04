@@ -29,7 +29,7 @@ namespace RegionOrebroLan.DataProtection.Configuration.KeyProtection
 				if(builder == null)
 					throw new ArgumentNullException(nameof(builder));
 
-				var resolverOptions = (ResolverOptions) builder.InstanceFactory.Create(this.CertificateResolver.Type);
+				var resolverOptions = (ResolverOptions)builder.InstanceFactory.Create(this.CertificateResolver.Type);
 				this.CertificateResolver.Options?.Bind(resolverOptions);
 
 				var certificate = builder.CertificateResolver.Resolve(resolverOptions);

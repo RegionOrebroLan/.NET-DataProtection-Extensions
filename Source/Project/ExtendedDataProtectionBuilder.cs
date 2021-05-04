@@ -44,7 +44,7 @@ namespace RegionOrebroLan.DataProtection
 				var dynamicOptions = new DynamicOptions();
 				configurationSection.Bind(dynamicOptions);
 
-				var dataProtectionOptions = (ExtendedDataProtectionOptions) this.InstanceFactory.Create(dynamicOptions.Type);
+				var dataProtectionOptions = (ExtendedDataProtectionOptions)this.InstanceFactory.Create(dynamicOptions.Type);
 				configurationSection.Bind(dataProtectionOptions);
 				dynamicOptions.Options.Bind(dataProtectionOptions);
 

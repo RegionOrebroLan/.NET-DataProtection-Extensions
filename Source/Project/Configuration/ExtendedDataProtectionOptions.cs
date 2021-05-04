@@ -27,7 +27,7 @@ namespace RegionOrebroLan.DataProtection.Configuration
 
 			try
 			{
-				var keyProtectionOptions = (KeyProtectionOptions) builder.InstanceFactory.Create(this.KeyProtection.Type);
+				var keyProtectionOptions = (KeyProtectionOptions)builder.InstanceFactory.Create(this.KeyProtection.Type);
 				this.KeyProtection.Options.Bind(keyProtectionOptions);
 				keyProtectionOptions.Add(builder);
 			}
