@@ -16,13 +16,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RegionOrebroLan;
 using RegionOrebroLan.Data;
 using RegionOrebroLan.Data.Common;
 using RegionOrebroLan.DataProtection.Configuration;
 using RegionOrebroLan.DataProtection.DependencyInjection.Extensions;
 using RegionOrebroLan.DependencyInjection;
 
-namespace RegionOrebroLan.DataProtection.IntegrationTests.DependencyInjection.Extensions
+namespace IntegrationTests.DependencyInjection.Extensions
 {
 	[TestClass]
 	public class ServiceCollectionExtensionTest
