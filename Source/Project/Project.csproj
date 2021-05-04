@@ -10,7 +10,8 @@
 		<AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
 		<Description>Additions and extensions for .NET data-protection (ASP.NET Core).</Description>
 		<FileVersion>$(VersionPrefix).0</FileVersion>
-		<TargetFramework>netstandard2.1</TargetFramework>
+		<RootNamespace>$(AssemblyName)</RootNamespace>
+		<TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.1</TargetFrameworks>
 		<Version>$(VersionPrefix)</Version>
 		<Version Condition="$(VersionPrereleaseName) != ''">$(Version)-$(VersionPrereleaseName)</Version>
 	</PropertyGroup>
@@ -23,13 +24,16 @@
 		<PackageTags></PackageTags>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="3.1.4" />
-		<PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="3.1.4" />
-		<PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="3.1.4" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="3.1.14" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="3.1.14" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="3.1.14" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.4" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.4" />
-		<PackageReference Include="RegionOrebroLan.Data" Version="1.3.0-alpha" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.14" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.14">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.14" />
+		<PackageReference Include="RegionOrebroLan" Version="1.2.8-alpha" />
 	</ItemGroup>
 	<Target Name="HandleAssemblyOriginatorKeyFile" BeforeTargets="BeforeBuild" Condition="$(SignAssembly) AND !Exists('$(AssemblyOriginatorKeyFile)')">
 		<PropertyGroup>

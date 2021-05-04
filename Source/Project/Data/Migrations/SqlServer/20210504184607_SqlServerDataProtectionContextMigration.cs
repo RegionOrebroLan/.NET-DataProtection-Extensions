@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace RegionOrebroLan.DataProtection.Data.Migrations
+namespace RegionOrebroLan.DataProtection.Data.Migrations.SqlServer
 {
-	public partial class Create : Migration
+	public partial class SqlServerDataProtectionContextMigration : Migration
 	{
 		#region Methods
 
@@ -23,7 +23,10 @@ namespace RegionOrebroLan.DataProtection.Data.Migrations
 					FriendlyName = table.Column<string>(nullable: true),
 					Xml = table.Column<string>(nullable: true)
 				},
-				constraints: table => { table.PrimaryKey("PK_DataProtectionKeys", x => x.Id); });
+				constraints: table =>
+				{
+					table.PrimaryKey("PK_DataProtectionKeys", x => x.Id);
+				});
 		}
 
 		#endregion

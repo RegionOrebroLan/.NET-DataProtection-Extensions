@@ -2,21 +2,19 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RegionOrebroLan.DataProtection.Data;
 
-namespace RegionOrebroLan.DataProtection.Data.Migrations
+namespace RegionOrebroLan.DataProtection.Data.Migrations.SqlServer
 {
-    [DbContext(typeof(DataProtectionKeyDbContext))]
-    [Migration("20200603110638_Create")]
-    partial class Create
+    [DbContext(typeof(SqlServerDataProtectionContext))]
+    partial class SqlServerDataProtectionContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.4")
+                .HasAnnotation("ProductVersion", "3.1.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 

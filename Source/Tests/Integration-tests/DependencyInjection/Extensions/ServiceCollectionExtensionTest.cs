@@ -1,10 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.IO.Abstractions;
-using System.Linq;
 using System.Threading;
 using Microsoft.AspNetCore.Builder.Internal;
 using Microsoft.AspNetCore.DataProtection;
@@ -12,14 +7,11 @@ using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.AspNetCore.DataProtection.XmlEncryption;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RegionOrebroLan;
-using RegionOrebroLan.Data;
-using RegionOrebroLan.Data.Common;
 using RegionOrebroLan.DataProtection.Configuration;
+using RegionOrebroLan.DataProtection.Data;
 using RegionOrebroLan.DataProtection.DependencyInjection.Extensions;
 using RegionOrebroLan.DependencyInjection;
 
@@ -89,8 +81,6 @@ namespace IntegrationTests.DependencyInjection.Extensions
 		[TestMethod]
 		public void AddDataProtection_SqlServer_Test()
 		{
-			this.DatabaseCleanup();
-
 			AppDomain.CurrentDomain.SetData("DataDirectory", this.DataDirectoryPath);
 
 			var configuration = Global.CreateConfiguration("appsettings.json", "appsettings.SqlServer.json");
@@ -101,21 +91,17 @@ namespace IntegrationTests.DependencyInjection.Extensions
 
 			services.AddDataProtection(Global.CreateCertificateResolver(), configuration, Global.HostEnvironment, new InstanceFactory());
 
-			Assert.AreEqual(31, services.Count - numberOfServicesBefore);
+			Assert.AreEqual(25, services.Count - numberOfServicesBefore);
 
 			var serviceProvider = services.BuildServiceProvider();
+
+			this.DatabaseCleanup(serviceProvider);
 
 			var dataProtectionOptions = serviceProvider.GetRequiredService<ExtendedDataProtectionOptions>();
 
 			dataProtectionOptions.Use(new ApplicationBuilder(serviceProvider));
 
 			Thread.Sleep(1000);
-
-			var databaseOptions = (DatabaseOptions)dataProtectionOptions;
-
-			var databaseManager = serviceProvider.GetRequiredService<IDatabaseManagerFactory>().Create(databaseOptions.ProviderName);
-
-			Assert.IsTrue(databaseManager.DatabaseExists(configuration.GetConnectionString(databaseOptions.ConnectionStringName)));
 
 			var keyManagementOptions = serviceProvider.GetRequiredService<IOptions<KeyManagementOptions>>();
 
@@ -131,61 +117,22 @@ namespace IntegrationTests.DependencyInjection.Extensions
 			var unprotectedValue = dataProtector.Unprotect(protectedValue);
 			Assert.AreEqual(value, unprotectedValue);
 
-			AppDomain.CurrentDomain.SetData("DataDirectory", null);
+			this.DatabaseCleanup(serviceProvider);
 
-			this.DatabaseCleanup();
+			AppDomain.CurrentDomain.SetData("DataDirectory", null);
 		}
 
-		[SuppressMessage("Design", "CA1031:Do not catch general exception types")]
-		protected internal virtual void DatabaseCleanup()
+		protected internal virtual void DatabaseCleanup(IServiceProvider serviceProvider)
 		{
-			var applicationDomain = new ApplicationHost(AppDomain.CurrentDomain, Global.HostEnvironment);
-			var databaseNames = new List<string>();
-			const string deleteDatabaseConnectionString = "Server=(LocalDB)\\MSSQLLocalDB;Integrated Security=True;MultipleActiveResultSets=True";
-			const string deleteDatabaseProviderName = "System.Data.SqlClient";
-			var fileSystem = new FileSystem();
-			var providerFactories = new DbProviderFactoriesWrapper();
+			if(serviceProvider == null)
+				throw new ArgumentNullException(nameof(serviceProvider));
 
-			var connectionStringBuilderFactory = new ConnectionStringBuilderFactory(providerFactories);
-			var connectionStringBuilder = connectionStringBuilderFactory.Create(deleteDatabaseConnectionString, deleteDatabaseProviderName);
-			var databaseManagerFactory = new DatabaseManagerFactory(applicationDomain, connectionStringBuilderFactory, fileSystem, providerFactories);
-			var databaseManager = databaseManagerFactory.Create(deleteDatabaseProviderName);
-			var dbProviderFactory = providerFactories.Get(deleteDatabaseProviderName);
-
-			using(var connection = dbProviderFactory.CreateConnection())
+			// ReSharper disable ConvertToUsingDeclaration
+			using(var scope = serviceProvider.CreateScope())
 			{
-				// ReSharper disable PossibleNullReferenceException
-				connection.ConnectionString = connectionStringBuilder.ConnectionString;
-				// ReSharper restore PossibleNullReferenceException
-				connection.Open();
-
-				using(var command = connection.CreateCommand())
-				{
-					command.CommandText = "SELECT name FROM master.sys.databases;";
-					command.CommandType = CommandType.Text;
-
-					using(var reader = command.ExecuteReader())
-					{
-						while(reader.Read())
-						{
-							databaseNames.Add(reader.GetString(0));
-						}
-					}
-				}
+				scope.ServiceProvider.GetRequiredService<DataProtectionContext>().Database.EnsureDeleted();
 			}
-
-			foreach(var databaseName in databaseNames.Where(name => name.StartsWith(this.DataDirectoryPath, StringComparison.OrdinalIgnoreCase)))
-			{
-				connectionStringBuilder.DatabaseFilePath = databaseName;
-
-				// ReSharper disable EmptyGeneralCatchClause
-				try
-				{
-					databaseManager.DropDatabase(connectionStringBuilder.ConnectionString);
-				}
-				catch { }
-				// ReSharper restore EmptyGeneralCatchClause
-			}
+			// ReSharper restore ConvertToUsingDeclaration
 		}
 
 		protected internal virtual void FileSystemCleanup()
