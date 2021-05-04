@@ -1,10 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="Build\Build.props" />
 	<ItemGroup>
-	  <Compile Remove="Data\Migrations\20200603105640_Create.cs" />
-	  <Compile Remove="Data\Migrations\20200603105640_Create.Designer.cs" />
-	</ItemGroup>
-	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="3.1.4" />
 		<PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="3.1.4" />
 		<PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="3.1.4" />
