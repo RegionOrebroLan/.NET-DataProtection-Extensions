@@ -78,6 +78,40 @@ namespace IntegrationTests.DependencyInjection.Extensions
 		}
 
 		[TestMethod]
+		public void AddDataProtection_DefaultOptions_Test()
+		{
+			var configuration = Global.CreateConfiguration("appsettings.json");
+
+			var services = Global.CreateServices(configuration);
+
+			var numberOfServicesBefore = services.Count;
+
+			services.AddDataProtection(Global.CreateCertificateResolver(), configuration, Global.HostEnvironment, new InstanceFactory());
+
+			Assert.AreEqual(19, services.Count - numberOfServicesBefore);
+
+			var serviceProvider = services.BuildServiceProvider();
+
+			var dataProtectionOptions = serviceProvider.GetRequiredService<ExtendedDataProtectionOptions>();
+
+			dataProtectionOptions.Use(new ApplicationBuilder(serviceProvider));
+
+			var keyManagementOptions = serviceProvider.GetRequiredService<IOptions<KeyManagementOptions>>();
+
+			Assert.IsNull(keyManagementOptions.Value.XmlEncryptor);
+			Assert.IsNull(keyManagementOptions.Value.XmlRepository);
+
+			const string value = "Test";
+			var dataProtector = serviceProvider.GetRequiredService<IDataProtectionProvider>().CreateProtector("Test");
+			var protectedValue = dataProtector.Protect(value);
+			var unprotectedValue = dataProtector.Unprotect(protectedValue);
+			Assert.AreEqual(value, unprotectedValue);
+
+			var defaultOptions = (DefaultOptions)dataProtectionOptions;
+			Assert.IsNull(defaultOptions.KeyProtection);
+		}
+
+		[TestMethod]
 		public void AddDataProtection_FileSystem_Test()
 		{
 			this.FileSystemCleanup();

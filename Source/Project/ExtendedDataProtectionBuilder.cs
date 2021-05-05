@@ -44,10 +44,10 @@ namespace RegionOrebroLan.DataProtection
 
 				ExtendedDataProtectionOptions dataProtectionOptions = new DefaultOptions();
 
+				this.Services.AddDataProtection(options => { configurationSection.Bind(options); });
+
 				if(dynamicOptions.Type != null)
 				{
-					this.Services.AddDataProtection(options => { configurationSection.Bind(options); });
-
 					dataProtectionOptions = (ExtendedDataProtectionOptions)this.InstanceFactory.Create(dynamicOptions.Type);
 
 					configurationSection.Bind(dataProtectionOptions);
