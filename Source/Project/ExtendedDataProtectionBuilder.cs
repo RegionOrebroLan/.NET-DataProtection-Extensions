@@ -39,14 +39,20 @@ namespace RegionOrebroLan.DataProtection
 			{
 				var configurationSection = this.Configuration.GetSection(this.ConfigurationKey);
 
-				this.Services.AddDataProtection(options => { configurationSection.Bind(options); });
-
 				var dynamicOptions = new DynamicOptions();
 				configurationSection.Bind(dynamicOptions);
 
-				var dataProtectionOptions = (ExtendedDataProtectionOptions)this.InstanceFactory.Create(dynamicOptions.Type);
-				configurationSection.Bind(dataProtectionOptions);
-				dynamicOptions.Options.Bind(dataProtectionOptions);
+				ExtendedDataProtectionOptions dataProtectionOptions = new DefaultOptions();
+
+				if(dynamicOptions.Type != null)
+				{
+					this.Services.AddDataProtection(options => { configurationSection.Bind(options); });
+
+					dataProtectionOptions = (ExtendedDataProtectionOptions)this.InstanceFactory.Create(dynamicOptions.Type);
+
+					configurationSection.Bind(dataProtectionOptions);
+					dynamicOptions.Options.Bind(dataProtectionOptions);
+				}
 
 				dataProtectionOptions.Add(this);
 

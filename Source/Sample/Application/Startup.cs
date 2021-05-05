@@ -8,6 +8,7 @@ using RegionOrebroLan;
 using RegionOrebroLan.DataProtection.Builder.Extensions;
 using RegionOrebroLan.DataProtection.DependencyInjection.Extensions;
 using RegionOrebroLan.DependencyInjection;
+using RegionOrebroLan.Extensions;
 using RegionOrebroLan.Security.Cryptography;
 
 namespace Application
@@ -28,7 +29,6 @@ namespace Application
 
 		public virtual IConfiguration Configuration { get; }
 		public virtual IHostEnvironment HostEnvironment { get; }
-		protected internal virtual bool IsDefaultEnvironment => string.Equals("Default", this.HostEnvironment.EnvironmentName, StringComparison.OrdinalIgnoreCase);
 
 		#endregion
 
@@ -39,17 +39,15 @@ namespace Application
 			if(applicationBuilder == null)
 				throw new ArgumentNullException(nameof(applicationBuilder));
 
-			applicationBuilder.UseDeveloperExceptionPage();
-
-			AppDomain.CurrentDomain.SetData("DataDirectory", Path.Combine(this.HostEnvironment.ContentRootPath, "Data"));
-
-			if(!this.IsDefaultEnvironment)
-				applicationBuilder.UseDataProtection();
-
 			applicationBuilder
+				.UseDeveloperExceptionPage()
+				.UseDataProtection()
 				.UseStaticFiles()
 				.UseRouting()
-				.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
+				.UseEndpoints(endpoints =>
+				{
+					endpoints.MapDefaultControllerRoute();
+				});
 		}
 
 		public virtual void ConfigureServices(IServiceCollection services)
@@ -57,9 +55,8 @@ namespace Application
 			if(services == null)
 				throw new ArgumentNullException(nameof(services));
 
-			if(!this.IsDefaultEnvironment)
-				services.AddDataProtection(this.CreateCertificateResolver(), this.Configuration, this.HostEnvironment, new InstanceFactory());
-
+			AppDomain.CurrentDomain.SetDataDirectory(Path.Combine(this.HostEnvironment.ContentRootPath, "Data"));
+			services.AddDataProtection(this.CreateCertificateResolver(), this.Configuration, this.HostEnvironment, new InstanceFactory());
 			services.AddControllersWithViews();
 		}
 
