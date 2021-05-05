@@ -1,5 +1,5 @@
-@model ProtectForm
-<form asp-action="Protect">
+﻿@model ProtectForm
+<form asp-action="Protect" asp-fragment="protect-header">
 	<div class="form-group">
 		<label asp-for="Purpose">Purpose</label>
 		<input class="form-control" asp-for="Purpose" placeholder="Enter the purpose or use default.">

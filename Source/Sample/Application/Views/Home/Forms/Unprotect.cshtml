@@ -1,5 +1,5 @@
-@model UnprotectForm
-<form asp-action="Unprotect">
+﻿@model UnprotectForm
+<form asp-action="Unprotect" asp-fragment="unprotect-header">
 	<div class="form-group">
 		<label asp-for="Purpose">Purpose</label>
 		<input class="form-control" asp-for="Purpose" placeholder="Enter the purpose or use default.">
