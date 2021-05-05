@@ -182,7 +182,7 @@ namespace IntegrationTests.DependencyInjection.Extensions
 
 		protected internal virtual void FileSystemCleanup()
 		{
-			var directoryPath = Path.Combine(this.DataDirectoryPath, @"Keys\_");
+			var directoryPath = Path.Combine(this.DataDirectoryPath, "Keys");
 
 			if(Directory.Exists(directoryPath))
 				Directory.Delete(directoryPath, true);
