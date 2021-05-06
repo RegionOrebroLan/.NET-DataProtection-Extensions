@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Microsoft.AspNetCore.DataProtection;
+using IDataProtectionBuilder = RegionOrebroLan.DataProtection.DependencyInjection.IDataProtectionBuilder;
 
 namespace RegionOrebroLan.DataProtection.Configuration
 {

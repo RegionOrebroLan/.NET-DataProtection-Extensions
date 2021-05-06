@@ -1,3 +1,5 @@
+using RegionOrebroLan.DataProtection.DependencyInjection;
+
 namespace RegionOrebroLan.DataProtection.Configuration.KeyProtection
 {
 	public abstract class KeyProtectionOptions

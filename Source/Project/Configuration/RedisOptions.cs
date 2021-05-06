@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.DataProtection;
 using StackExchange.Redis;
+using IDataProtectionBuilder = RegionOrebroLan.DataProtection.DependencyInjection.IDataProtectionBuilder;
 
 namespace RegionOrebroLan.DataProtection.Configuration
 {

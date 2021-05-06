@@ -7,7 +7,7 @@ using RegionOrebroLan.DataProtection.Configuration;
 using RegionOrebroLan.DependencyInjection;
 using RegionOrebroLan.Security.Cryptography;
 
-namespace RegionOrebroLan.DataProtection
+namespace RegionOrebroLan.DataProtection.DependencyInjection
 {
 	public class ExtendedDataProtectionBuilder : IDataProtectionBuilder
 	{

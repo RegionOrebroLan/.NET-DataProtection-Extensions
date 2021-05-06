@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using RegionOrebroLan.Configuration;
 using RegionOrebroLan.DataProtection.Configuration.KeyProtection;
+using IDataProtectionBuilder = RegionOrebroLan.DataProtection.DependencyInjection.IDataProtectionBuilder;
 
 namespace RegionOrebroLan.DataProtection.Configuration
 {

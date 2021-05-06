@@ -1,6 +1,7 @@
 using System;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.XmlEncryption;
+using IDataProtectionBuilder = RegionOrebroLan.DataProtection.DependencyInjection.IDataProtectionBuilder;
 
 namespace RegionOrebroLan.DataProtection.Configuration.KeyProtection
 {

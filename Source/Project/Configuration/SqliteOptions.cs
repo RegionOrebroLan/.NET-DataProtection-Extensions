@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RegionOrebroLan.DataProtection.Data;
+using RegionOrebroLan.DataProtection.DependencyInjection;
 
 namespace RegionOrebroLan.DataProtection.Configuration
 {

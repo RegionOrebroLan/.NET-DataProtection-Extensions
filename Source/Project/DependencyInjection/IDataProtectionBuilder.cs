@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 using RegionOrebroLan.DependencyInjection;
 using RegionOrebroLan.Security.Cryptography;
 
-namespace RegionOrebroLan.DataProtection
+namespace RegionOrebroLan.DataProtection.DependencyInjection
 {
 	public interface IDataProtectionBuilder : Microsoft.AspNetCore.DataProtection.IDataProtectionBuilder
 	{

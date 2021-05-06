@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RegionOrebroLan.DataProtection.Data;
+using RegionOrebroLan.DataProtection.DependencyInjection;
 using RegionOrebroLan.IO.Extensions;
 
 namespace RegionOrebroLan.DataProtection.Configuration

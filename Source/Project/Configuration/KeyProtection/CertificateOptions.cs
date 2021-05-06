@@ -6,6 +6,7 @@ using RegionOrebroLan.Abstractions.Extensions;
 using RegionOrebroLan.Configuration;
 using RegionOrebroLan.Security.Cryptography.Configuration;
 using RegionOrebroLan.Security.Cryptography.Extensions;
+using IDataProtectionBuilder = RegionOrebroLan.DataProtection.DependencyInjection.IDataProtectionBuilder;
 
 namespace RegionOrebroLan.DataProtection.Configuration.KeyProtection
 {

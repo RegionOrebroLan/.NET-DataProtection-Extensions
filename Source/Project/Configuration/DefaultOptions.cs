@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using RegionOrebroLan.DataProtection.DependencyInjection;
 
 namespace RegionOrebroLan.DataProtection.Configuration
 {
