@@ -13,8 +13,12 @@ namespace RegionOrebroLan.DataProtection.DependencyInjection
 	{
 		#region Constructors
 
-		public ExtendedDataProtectionBuilder(IServiceCollection services)
+		public ExtendedDataProtectionBuilder(ICertificateResolver certificateResolver, IConfiguration configuration, IHostEnvironment hostEnvironment, IInstanceFactory instanceFactory, IServiceCollection services)
 		{
+			this.CertificateResolver = certificateResolver ?? throw new ArgumentNullException(nameof(certificateResolver));
+			this.Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+			this.HostEnvironment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
+			this.InstanceFactory = instanceFactory ?? throw new ArgumentNullException(nameof(instanceFactory));
 			this.Services = services ?? throw new ArgumentNullException(nameof(services));
 		}
 
@@ -22,11 +26,11 @@ namespace RegionOrebroLan.DataProtection.DependencyInjection
 
 		#region Properties
 
-		public virtual ICertificateResolver CertificateResolver { get; set; }
-		public virtual IConfiguration Configuration { get; set; }
+		public virtual ICertificateResolver CertificateResolver { get; }
+		public virtual IConfiguration Configuration { get; }
 		public virtual string ConfigurationKey { get; set; } = ConfigurationKeys.DataProtectionPath;
-		public virtual IHostEnvironment HostEnvironment { get; set; }
-		public virtual IInstanceFactory InstanceFactory { get; set; }
+		public virtual IHostEnvironment HostEnvironment { get; }
+		public virtual IInstanceFactory InstanceFactory { get; }
 		public virtual IServiceCollection Services { get; }
 
 		#endregion

@@ -33,31 +33,12 @@ namespace RegionOrebroLan.DataProtection.DependencyInjection.Extensions
 			if(services == null)
 				throw new ArgumentNullException(nameof(services));
 
-			if(certificateResolver == null)
-				throw new ArgumentNullException(nameof(certificateResolver));
-
-			if(configuration == null)
-				throw new ArgumentNullException(nameof(configuration));
-
-			if(configurationKey == null)
-				throw new ArgumentNullException(nameof(configurationKey));
-
-			if(hostEnvironment == null)
-				throw new ArgumentNullException(nameof(hostEnvironment));
-
-			if(instanceFactory == null)
-				throw new ArgumentNullException(nameof(instanceFactory));
-
 			if(postConfigureOptions == null)
 				throw new ArgumentNullException(nameof(postConfigureOptions));
 
-			var dataProtectionBuilder = new ExtendedDataProtectionBuilder(services)
+			var dataProtectionBuilder = new ExtendedDataProtectionBuilder(certificateResolver, configuration, hostEnvironment, instanceFactory, services)
 			{
-				CertificateResolver = certificateResolver,
-				Configuration = configuration,
-				ConfigurationKey = configurationKey,
-				HostEnvironment = hostEnvironment,
-				InstanceFactory = instanceFactory,
+				ConfigurationKey = configurationKey
 			};
 
 			dataProtectionBuilder.Configure();
