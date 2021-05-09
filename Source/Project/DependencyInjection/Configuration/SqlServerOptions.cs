@@ -4,10 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RegionOrebroLan.DataProtection.Data;
-using RegionOrebroLan.DataProtection.DependencyInjection;
 using RegionOrebroLan.IO.Extensions;
 
-namespace RegionOrebroLan.DataProtection.Configuration
+namespace RegionOrebroLan.DataProtection.DependencyInjection.Configuration
 {
 	public class SqlServerOptions : DatabaseOptions
 	{
@@ -27,6 +26,8 @@ namespace RegionOrebroLan.DataProtection.Configuration
 							options.MigrationsAssembly(this.MigrationsAssembly);
 					}
 				));
+
+			base.AddInternal(builder);
 		}
 
 		protected internal virtual string GetConnectionString(IConfiguration configuration)

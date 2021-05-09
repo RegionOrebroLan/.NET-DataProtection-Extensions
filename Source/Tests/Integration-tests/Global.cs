@@ -60,20 +60,19 @@ namespace IntegrationTests
 
 		public static IConfiguration CreateConfiguration(params string[] jsonFilePaths)
 		{
-			var configurationBuilder = CreateConfigurationBuilder();
-
-			foreach(var path in jsonFilePaths)
-			{
-				configurationBuilder.AddJsonFile(path, true, true);
-			}
-
-			return configurationBuilder.Build();
+			return CreateConfigurationBuilder(jsonFilePaths).Build();
 		}
 
-		public static IConfigurationBuilder CreateConfigurationBuilder()
+		public static IConfigurationBuilder CreateConfigurationBuilder(params string[] jsonFilePaths)
 		{
 			var configurationBuilder = new ConfigurationBuilder();
 			configurationBuilder.Properties.Add("FileProvider", HostEnvironment.ContentRootFileProvider);
+
+			foreach(var path in jsonFilePaths)
+			{
+				configurationBuilder.AddJsonFile(path, false, true);
+			}
+
 			return configurationBuilder;
 		}
 

@@ -1,7 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using RegionOrebroLan.DataProtection.Configuration;
+using RegionOrebroLan.DataProtection.DependencyInjection.Configuration;
 
 namespace RegionOrebroLan.DataProtection.Builder.Extensions
 {
@@ -16,7 +16,7 @@ namespace RegionOrebroLan.DataProtection.Builder.Extensions
 				if(applicationBuilder == null)
 					throw new ArgumentNullException(nameof(applicationBuilder));
 
-				var dataProtectionOptions = applicationBuilder.ApplicationServices.GetRequiredService<ExtendedDataProtectionOptions>();
+				var dataProtectionOptions = applicationBuilder.ApplicationServices.GetRequiredService<DataProtectionOptions>();
 
 				dataProtectionOptions.Use(applicationBuilder);
 

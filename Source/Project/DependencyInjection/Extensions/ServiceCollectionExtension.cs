@@ -36,7 +36,7 @@ namespace RegionOrebroLan.DataProtection.DependencyInjection.Extensions
 			if(postConfigureOptions == null)
 				throw new ArgumentNullException(nameof(postConfigureOptions));
 
-			var dataProtectionBuilder = new ExtendedDataProtectionBuilder(certificateResolver, configuration, hostEnvironment, instanceFactory, services)
+			var dataProtectionBuilder = new DataProtectionBuilder(certificateResolver, configuration, hostEnvironment, instanceFactory, services)
 			{
 				ConfigurationKey = configurationKey
 			};

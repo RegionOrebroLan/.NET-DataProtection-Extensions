@@ -1,20 +1,27 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
+using IntegrationTests.Helpers;
 using Microsoft.AspNetCore.Builder.Internal;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.AzureStorage;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.DataProtection.Repositories;
+using Microsoft.AspNetCore.DataProtection.StackExchangeRedis;
 using Microsoft.AspNetCore.DataProtection.XmlEncryption;
+using Microsoft.Azure.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RegionOrebroLan.DataProtection.Configuration;
 using RegionOrebroLan.DataProtection.Data;
 using RegionOrebroLan.DataProtection.DependencyInjection.Extensions;
 using RegionOrebroLan.DependencyInjection;
 using RegionOrebroLan.Extensions;
+using StackExchange.Redis;
+using DataProtectionOptions = RegionOrebroLan.DataProtection.DependencyInjection.Configuration.DataProtectionOptions;
 
 namespace IntegrationTests.DependencyInjection.Extensions
 {
@@ -23,7 +30,7 @@ namespace IntegrationTests.DependencyInjection.Extensions
 	{
 		#region Fields
 
-		private static readonly string _dataDirectoryPath = Path.Combine(Global.ProjectDirectoryPath, "Data");
+		private static readonly string _dataDirectoryPath = Path.Combine(Global.ProjectDirectoryPath, "Test-data");
 
 		#endregion
 
@@ -35,9 +42,217 @@ namespace IntegrationTests.DependencyInjection.Extensions
 
 		#region Methods
 
-		protected internal virtual void AddDataProtection_Database_Test(string environment)
+		[TestMethod]
+		public async Task AddDataProtection_Azure_Certificate_Test()
 		{
-			var configuration = Global.CreateConfiguration("appsettings.json", $"appsettings.{environment}.json");
+			await this.AddDataProtectionAzureTest(22, KeyProtectionKind.Certificate);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Azure_Dpapi_Test()
+		{
+			await this.AddDataProtectionAzureTest(21, KeyProtectionKind.Dpapi);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Azure_DpapiNg_Test()
+		{
+			await this.AddDataProtectionAzureTest(21, KeyProtectionKind.DpapiNg);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Azure_Test()
+		{
+			await this.AddDataProtectionAzureTest(20, null);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_EmptyOptions_ApplicationDiscriminator_Test()
+		{
+			await this.AddDataProtectionTest(null, 19, null, true);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_EmptyOptions_Test()
+		{
+			await this.AddDataProtectionTest(null, 19, null);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_FileSystem_ApplicationDiscriminator_Test()
+		{
+			await this.AddDataProtectionTest(DataProtectionKind.FileSystem, 20, null, true);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_FileSystem_Certificate_Test()
+		{
+			await this.AddDataProtectionTest(DataProtectionKind.FileSystem, 22, KeyProtectionKind.Certificate);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_FileSystem_Dpapi_Test()
+		{
+			await this.AddDataProtectionTest(DataProtectionKind.FileSystem, 21, KeyProtectionKind.Dpapi);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_FileSystem_DpapiNg_Test()
+		{
+			await this.AddDataProtectionTest(DataProtectionKind.FileSystem, 21, KeyProtectionKind.DpapiNg);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_FileSystem_Test()
+		{
+			await this.AddDataProtectionTest(DataProtectionKind.FileSystem, 20, null);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Redis_Configuration_Certificate_Test()
+		{
+			await this.AddDataProtectionRedisTest(false, 22, KeyProtectionKind.Certificate);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Redis_Configuration_Dpapi_Test()
+		{
+			await this.AddDataProtectionRedisTest(false, 21, KeyProtectionKind.Dpapi);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Redis_Configuration_DpapiNg_Test()
+		{
+			await this.AddDataProtectionRedisTest(false, 21, KeyProtectionKind.DpapiNg);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Redis_Configuration_Test()
+		{
+			await this.AddDataProtectionRedisTest(false, 20, null);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Redis_ConfigurationOptions_Certificate_Test()
+		{
+			await this.AddDataProtectionRedisTest(true, 22, KeyProtectionKind.Certificate);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Redis_ConfigurationOptions_Dpapi_Test()
+		{
+			await this.AddDataProtectionRedisTest(true, 21, KeyProtectionKind.Dpapi);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Redis_ConfigurationOptions_DpapiNg_Test()
+		{
+			await this.AddDataProtectionRedisTest(true, 21, KeyProtectionKind.DpapiNg);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Redis_ConfigurationOptions_Test()
+		{
+			await this.AddDataProtectionRedisTest(true, 20, null);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Sqlite_Certificate_Test()
+		{
+			await this.AddDataProtectionDatabaseTest(25, KeyProtectionKind.Certificate, true);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Sqlite_Dpapi_Test()
+		{
+			await this.AddDataProtectionDatabaseTest(24, KeyProtectionKind.Dpapi, true);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Sqlite_DpapiNg_Test()
+		{
+			await this.AddDataProtectionDatabaseTest(24, KeyProtectionKind.DpapiNg, true);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Sqlite_Test()
+		{
+			await this.AddDataProtectionDatabaseTest(23, null, true);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_SqlServer_Certificate_Test()
+		{
+			await this.AddDataProtectionDatabaseTest(25, KeyProtectionKind.Certificate, false);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_SqlServer_Dpapi_Test()
+		{
+			await this.AddDataProtectionDatabaseTest(24, KeyProtectionKind.Dpapi, false);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_SqlServer_DpapiNg_Test()
+		{
+			await this.AddDataProtectionDatabaseTest(24, KeyProtectionKind.DpapiNg, false);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_SqlServer_Test()
+		{
+			await this.AddDataProtectionDatabaseTest(23, null, false);
+		}
+
+		protected internal virtual async Task AddDataProtectionAzureTest(int expectedNumberOfServices, KeyProtectionKind? keyProtectionKind)
+		{
+			try
+			{
+				//await this.AddDataProtectionTest(DataProtectionKind.Azure, expectedNumberOfServices, keyProtectionKind);
+				await this.AddDataProtectionTest(DataProtectionKind.Azure, expectedNumberOfServices, keyProtectionKind, false, true);
+			}
+			catch(CryptographicException cryptographicException)
+			{
+				if(cryptographicException.InnerException is StorageException)
+					Assert.Inconclusive($"You need to setup an Azure Storage account. Exception: {cryptographicException.InnerException}");
+			}
+		}
+
+		protected internal virtual async Task AddDataProtectionDatabaseTest(int expectedNumberOfServices, KeyProtectionKind? keyProtectionKind, bool sqlite)
+		{
+			await this.AddDataProtectionTest(sqlite ? DataProtectionKind.Sqlite : DataProtectionKind.SqlServer, expectedNumberOfServices, keyProtectionKind);
+		}
+
+		protected internal virtual async Task AddDataProtectionRedisTest(bool configurationOptions, int expectedNumberOfServices, KeyProtectionKind? keyProtectionKind)
+		{
+			try
+			{
+				await this.AddDataProtectionTest(configurationOptions ? DataProtectionKind.RedisConfigurationOptions : DataProtectionKind.RedisConfiguration, expectedNumberOfServices, keyProtectionKind);
+			}
+			catch(InvalidOperationException invalidOperationException)
+			{
+				if(invalidOperationException.InnerException?.InnerException is RedisConnectionException)
+					Assert.Inconclusive($"You need to setup a Redis. You can do it with docker: \"docker run --rm -it -p 6379:6379 redis\". Exception: {invalidOperationException.InnerException.InnerException}");
+			}
+		}
+
+		protected internal virtual async Task AddDataProtectionTest(DataProtectionKind? dataProtectionKind, int expectedNumberOfServices, KeyProtectionKind? keyProtectionKind, bool applicationDiscriminator = false, bool skipProtectionTest = false)
+		{
+			var jsonFilePaths = new List<string>
+			{
+				"appsettings.json"
+			};
+
+			if(applicationDiscriminator)
+				jsonFilePaths.Add($"appsettings.ApplicationDiscriminator.json");
+
+			if(dataProtectionKind != null)
+				jsonFilePaths.Add($"appsettings.{dataProtectionKind}.json");
+
+			if(keyProtectionKind != null)
+				jsonFilePaths.Add($"appsettings.Key-Protection.{keyProtectionKind}.json");
+
+			var configuration = Global.CreateConfiguration(jsonFilePaths.ToArray());
 
 			var services = Global.CreateServices(configuration);
 
@@ -45,114 +260,64 @@ namespace IntegrationTests.DependencyInjection.Extensions
 
 			services.AddDataProtection(Global.CreateCertificateResolver(), configuration, Global.HostEnvironment, new InstanceFactory());
 
-			Assert.AreEqual(25, services.Count - numberOfServicesBefore);
+			Assert.AreEqual(expectedNumberOfServices, services.Count - numberOfServicesBefore);
 
-			using(var serviceProvider = services.BuildServiceProvider())
+			await using(var serviceProvider = services.BuildServiceProvider())
 			{
-				var dataProtectionOptions = serviceProvider.GetRequiredService<ExtendedDataProtectionOptions>();
+				var microsoftDataProtectionOptions = serviceProvider.GetRequiredService<IOptions<Microsoft.AspNetCore.DataProtection.DataProtectionOptions>>();
+				var expectedApplicationDiscriminator = applicationDiscriminator ? "Test" : Global.ProjectDirectoryPath;
+				Assert.AreEqual(expectedApplicationDiscriminator, microsoftDataProtectionOptions.Value.ApplicationDiscriminator);
+
+				var dataProtectionOptions = serviceProvider.GetRequiredService<DataProtectionOptions>();
 
 				dataProtectionOptions.Use(new ApplicationBuilder(serviceProvider));
 
-				var keyManagementOptions = serviceProvider.GetRequiredService<IOptions<KeyManagementOptions>>();
+				var keyManagementOptions = serviceProvider.GetRequiredService<IOptions<KeyManagementOptions>>().Value;
 
-				var genericXmlRepositoryType = keyManagementOptions.Value.XmlRepository.GetType().GetGenericTypeDefinition();
-				Assert.AreEqual(typeof(EntityFrameworkCoreXmlRepository<>), genericXmlRepositoryType);
+				var expectedXmlEncryptorType = await this.GetXmlEncryptorTypeAsync(keyProtectionKind);
+				Assert.AreEqual(expectedXmlEncryptorType, keyManagementOptions.XmlEncryptor?.GetType());
 
-				var xmlEncryptorType = keyManagementOptions.Value.XmlEncryptor.GetType();
-				Assert.AreEqual(typeof(CertificateXmlEncryptor), xmlEncryptorType);
+				var expectedXmlRepositoryType = await this.GetXmlRepositoryTypeAsync(dataProtectionKind);
+				Assert.AreEqual(expectedXmlRepositoryType, keyManagementOptions.XmlRepository?.GetType());
 
-				const string value = "Test";
-				var dataProtector = serviceProvider.GetRequiredService<IDataProtectionProvider>().CreateProtector("Test");
+				if(skipProtectionTest)
+					return;
+
+				const string value = "Test-value";
+				var dataProtector = serviceProvider.GetRequiredService<IDataProtectionProvider>().CreateProtector("Test-purpose");
 				var protectedValue = dataProtector.Protect(value);
 				var unprotectedValue = dataProtector.Unprotect(protectedValue);
 				Assert.AreEqual(value, unprotectedValue);
 			}
 		}
 
-		[TestMethod]
-		public void AddDataProtection_DefaultOptions_Test()
+		protected internal virtual async Task<Type> GetXmlEncryptorTypeAsync(KeyProtectionKind? keyProtectionKind)
 		{
-			var configuration = Global.CreateConfiguration("appsettings.json");
+			await Task.CompletedTask;
 
-			var services = Global.CreateServices(configuration);
-
-			var numberOfServicesBefore = services.Count;
-
-			services.AddDataProtection(Global.CreateCertificateResolver(), configuration, Global.HostEnvironment, new InstanceFactory());
-
-			Assert.AreEqual(19, services.Count - numberOfServicesBefore);
-
-			using(var serviceProvider = services.BuildServiceProvider())
+			return keyProtectionKind switch
 			{
-				var dataProtectionOptions = serviceProvider.GetRequiredService<ExtendedDataProtectionOptions>();
-
-				dataProtectionOptions.Use(new ApplicationBuilder(serviceProvider));
-
-				var keyManagementOptions = serviceProvider.GetRequiredService<IOptions<KeyManagementOptions>>();
-
-				Assert.IsNull(keyManagementOptions.Value.XmlEncryptor);
-				Assert.IsNull(keyManagementOptions.Value.XmlRepository);
-
-				const string value = "Test";
-				var dataProtector = serviceProvider.GetRequiredService<IDataProtectionProvider>().CreateProtector("Test");
-				var protectedValue = dataProtector.Protect(value);
-				var unprotectedValue = dataProtector.Unprotect(protectedValue);
-				Assert.AreEqual(value, unprotectedValue);
-
-				var defaultOptions = (DefaultOptions)dataProtectionOptions;
-				Assert.IsNull(defaultOptions.KeyProtection);
-			}
+				KeyProtectionKind.Certificate => typeof(CertificateXmlEncryptor),
+				KeyProtectionKind.Dpapi => typeof(DpapiXmlEncryptor),
+				KeyProtectionKind.DpapiNg => typeof(DpapiNGXmlEncryptor),
+				_ => null
+			};
 		}
 
-		[TestMethod]
-		public void AddDataProtection_FileSystem_Test()
+		protected internal virtual async Task<Type> GetXmlRepositoryTypeAsync(DataProtectionKind? dataProtectionKind)
 		{
-			var configuration = Global.CreateConfiguration("appsettings.json", "appsettings.FileSystem.json");
+			await Task.CompletedTask;
 
-			var services = Global.CreateServices(configuration);
-
-			var numberOfServicesBefore = services.Count;
-
-			services.AddDataProtection(Global.CreateCertificateResolver(), configuration, Global.HostEnvironment, new InstanceFactory());
-
-			Assert.AreEqual(21, services.Count - numberOfServicesBefore);
-
-			using(var serviceProvider = services.BuildServiceProvider())
+			return dataProtectionKind switch
 			{
-				var dataProtectionOptions = serviceProvider.GetRequiredService<ExtendedDataProtectionOptions>();
-
-				dataProtectionOptions.Use(new ApplicationBuilder(serviceProvider));
-
-				var keyManagementOptions = serviceProvider.GetRequiredService<IOptions<KeyManagementOptions>>();
-
-				var xmlRepositoryType = keyManagementOptions.Value.XmlRepository.GetType();
-				Assert.AreEqual(typeof(FileSystemXmlRepository), xmlRepositoryType);
-
-				var xmlEncryptorType = keyManagementOptions.Value.XmlEncryptor.GetType();
-				Assert.AreEqual(typeof(DpapiNGXmlEncryptor), xmlEncryptorType);
-
-				const string value = "Test";
-				var dataProtector = serviceProvider.GetRequiredService<IDataProtectionProvider>().CreateProtector("Test");
-				var protectedValue = dataProtector.Protect(value);
-				var unprotectedValue = dataProtector.Unprotect(protectedValue);
-				Assert.AreEqual(value, unprotectedValue);
-
-				var fileSystemOptions = (FileSystemOptions)dataProtectionOptions;
-				var directoryPath = Path.Combine(Global.ProjectDirectoryPath, fileSystemOptions.Path);
-				Assert.IsTrue(Directory.Exists(directoryPath));
-			}
-		}
-
-		[TestMethod]
-		public void AddDataProtection_Sqlite_Test()
-		{
-			this.AddDataProtection_Database_Test("Sqlite");
-		}
-
-		[TestMethod]
-		public void AddDataProtection_SqlServer_Test()
-		{
-			this.AddDataProtection_Database_Test("SqlServer");
+				DataProtectionKind.Azure => typeof(AzureBlobXmlRepository),
+				DataProtectionKind.FileSystem => typeof(FileSystemXmlRepository),
+				DataProtectionKind.RedisConfiguration => typeof(RedisXmlRepository),
+				DataProtectionKind.RedisConfigurationOptions => typeof(RedisXmlRepository),
+				DataProtectionKind.Sqlite => typeof(EntityFrameworkCoreXmlRepository<DataProtectionContext>),
+				DataProtectionKind.SqlServer => typeof(EntityFrameworkCoreXmlRepository<DataProtectionContext>),
+				_ => null
+			};
 		}
 
 		[TestCleanup]

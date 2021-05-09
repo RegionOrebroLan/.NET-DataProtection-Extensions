@@ -3,9 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RegionOrebroLan.DataProtection.Data;
-using RegionOrebroLan.DataProtection.DependencyInjection;
 
-namespace RegionOrebroLan.DataProtection.Configuration
+namespace RegionOrebroLan.DataProtection.DependencyInjection.Configuration
 {
 	public class SqliteOptions : DatabaseOptions
 	{
@@ -25,6 +24,8 @@ namespace RegionOrebroLan.DataProtection.Configuration
 							options.MigrationsAssembly(this.MigrationsAssembly);
 					}
 				));
+
+			base.AddInternal(builder);
 		}
 
 		#endregion

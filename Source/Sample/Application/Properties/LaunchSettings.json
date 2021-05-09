@@ -1,6 +1,6 @@
 {
 	"profiles": {
-		"Default-protection": {
+		"Default": {
 			"applicationUrl": "https://localhost:5001;http://localhost:5000",
 			"commandName": "Project",
 			"environmentVariables": {
@@ -9,7 +9,7 @@
 			},
 			"launchBrowser": true
 		},
-		"Azure-protection": {
+		"Azure": {
 			"applicationUrl": "https://localhost:5001;http://localhost:5000",
 			"commandName": "Project",
 			"environmentVariables": {
@@ -18,7 +18,7 @@
 			},
 			"launchBrowser": true
 		},
-		"FileSystem-protection": {
+		"FileSystem": {
 			"applicationUrl": "https://localhost:5001;http://localhost:5000",
 			"commandName": "Project",
 			"environmentVariables": {
@@ -27,7 +27,7 @@
 			},
 			"launchBrowser": true
 		},
-		"Redis-protection": {
+		"Redis": {
 			"applicationUrl": "https://localhost:5001;http://localhost:5000",
 			"commandName": "Project",
 			"environmentVariables": {
@@ -36,7 +36,7 @@
 			},
 			"launchBrowser": true
 		},
-		"Sqlite-protection": {
+		"Sqlite": {
 			"applicationUrl": "https://localhost:5001;http://localhost:5000",
 			"commandName": "Project",
 			"environmentVariables": {
@@ -45,7 +45,7 @@
 			},
 			"launchBrowser": true
 		},
-		"SqlServer-protection": {
+		"SqlServer": {
 			"applicationUrl": "https://localhost:5001;http://localhost:5000",
 			"commandName": "Project",
 			"environmentVariables": {

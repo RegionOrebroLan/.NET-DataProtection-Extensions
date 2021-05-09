@@ -4,16 +4,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RegionOrebroLan.Configuration;
 using RegionOrebroLan.DataProtection.Configuration;
+using RegionOrebroLan.DataProtection.DependencyInjection.Configuration;
 using RegionOrebroLan.DependencyInjection;
 using RegionOrebroLan.Security.Cryptography;
 
 namespace RegionOrebroLan.DataProtection.DependencyInjection
 {
-	public class ExtendedDataProtectionBuilder : IDataProtectionBuilder
+	public class DataProtectionBuilder : IDataProtectionBuilder
 	{
 		#region Constructors
 
-		public ExtendedDataProtectionBuilder(ICertificateResolver certificateResolver, IConfiguration configuration, IHostEnvironment hostEnvironment, IInstanceFactory instanceFactory, IServiceCollection services)
+		public DataProtectionBuilder(ICertificateResolver certificateResolver, IConfiguration configuration, IHostEnvironment hostEnvironment, IInstanceFactory instanceFactory, IServiceCollection services)
 		{
 			this.CertificateResolver = certificateResolver ?? throw new ArgumentNullException(nameof(certificateResolver));
 			this.Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -46,17 +47,14 @@ namespace RegionOrebroLan.DataProtection.DependencyInjection
 				var dynamicOptions = new DynamicOptions();
 				configurationSection.Bind(dynamicOptions);
 
-				ExtendedDataProtectionOptions dataProtectionOptions = new DefaultOptions();
+				var dataProtectionOptions = dynamicOptions.Type != null ? (DataProtectionOptions)this.InstanceFactory.Create(dynamicOptions.Type) : new EmptyOptions();
 
-				this.Services.AddDataProtection(options => { configurationSection.Bind(options); });
+				configurationSection.Bind(dataProtectionOptions);
 
-				if(dynamicOptions.Type != null)
+				this.Services.AddDataProtection(options =>
 				{
-					dataProtectionOptions = (ExtendedDataProtectionOptions)this.InstanceFactory.Create(dynamicOptions.Type);
-
-					configurationSection.Bind(dataProtectionOptions);
-					dynamicOptions.Options.Bind(dataProtectionOptions);
-				}
+					dataProtectionOptions.Options?.Bind(options);
+				});
 
 				dataProtectionOptions.Add(this);
 

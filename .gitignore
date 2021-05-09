@@ -381,6 +381,6 @@ Source/Sample/Application/wwwroot/Style/*
 Source/Sample/Application/package-lock.json
 Source/Sample/Application/yarn.lock
 
-Source/Tests/Integration-tests/Data/*
-!Source/Tests/Integration-tests/Data/ReadMe.md
-!Source/Tests/Integration-tests/Data/Key-Protection-Certificate.pfx
+Source/Tests/Integration-tests/Test-data/*
+!Source/Tests/Integration-tests/Test-data/ReadMe.md
+!Source/Tests/Integration-tests/Test-data/Key-Protection-Certificate.pfx

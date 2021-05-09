@@ -8,11 +8,25 @@ Additions and extensions for .NET data-protection (ASP.NET Core).
 
 - Configuring data-protection through AppSettings.json
 
+### 1.1 Examples
+
+- [Azure](/Source/Sample/Application/appsettings.Azure.json) - the url is just an example
+- [FileSystem](/Source/Sample/Application/appsettings.FileSystem.json)
+- [Redis](/Source/Sample/Application/appsettings.Redis.json) - you need to setup Redis, see below
+- [Sqlite](/Source/Sample/Application/appsettings.Sqlite.json)
+- [SqlServer](/Source/Sample/Application/appsettings.SqlServer.json)
+
+#### 1.1.1 Redis
+
+Setup Redis locally with Docker:
+
+	docker run --rm -it -p 6379:6379 redis
+
 ## 2 Development
 
 ### 2.1 Data-protection with Azure
 
-- Haven't got it yet how the url should be entered.
+- Haven't got it yet how the url should be composed.
 
 ### 2.2 Data-protection with database (EF)
 
