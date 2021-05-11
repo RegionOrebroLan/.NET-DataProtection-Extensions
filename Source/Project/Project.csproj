@@ -11,7 +11,7 @@
 		<Description>Additions and extensions for .NET data-protection (ASP.NET Core).</Description>
 		<FileVersion>$(VersionPrefix).0</FileVersion>
 		<RootNamespace>$(AssemblyName)</RootNamespace>
-		<TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.1</TargetFrameworks>
+		<TargetFramework>netstandard2.1</TargetFramework>
 		<Version>$(VersionPrefix)</Version>
 		<Version Condition="$(VersionPrereleaseName) != ''">$(Version)-$(VersionPrereleaseName)</Version>
 	</PropertyGroup>
