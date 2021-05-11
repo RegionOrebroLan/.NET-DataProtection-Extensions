@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace RegionOrebroLan.DataProtection.Data.Migrations.Sqlite
+namespace RegionOrebroLan.DataProtection.Data.Migrations.SqlServer
 {
-	public partial class SqliteDataProtectionContextMigration : Migration
+	public partial class SqlServerDataProtectionContextMigration : Migration
 	{
 		#region Methods
 
@@ -18,10 +18,10 @@ namespace RegionOrebroLan.DataProtection.Data.Migrations.Sqlite
 				name: "DataProtectionKeys",
 				columns: table => new
 				{
-					Id = table.Column<int>(nullable: false)
-						.Annotation("Sqlite:Autoincrement", true),
-					FriendlyName = table.Column<string>(nullable: true),
-					Xml = table.Column<string>(nullable: true)
+					Id = table.Column<int>(type: "int", nullable: false)
+						.Annotation("SqlServer:Identity", "1, 1"),
+					FriendlyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+					Xml = table.Column<string>(type: "nvarchar(max)", nullable: true)
 				},
 				constraints: table =>
 				{

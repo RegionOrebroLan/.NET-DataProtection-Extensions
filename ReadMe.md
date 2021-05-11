@@ -38,27 +38,25 @@ Copy all the commands below and run them in the Package Manager Console for the 
 
 If you want more migration-information you can add the -Verbose parameter:
 
-	Add-Migration TheMigration -Context TheDatabaseContext -OutputDir Data/Migrations -Project Project -Verbose;
-
-**Important!** Before running the commands below you need to ensure the "Project"-project is set as startup-project. 
+	Add-Migration TheMigration -Context TheDatabaseContext -OutputDir Data/Migrations -Project Project -StartupProject Application -Verbose;
 
 ##### 2.1.1.1 Create migrations
 
 	Write-Host "Removing migrations...";
-	Remove-Migration -Context SqliteDataProtectionContext -Force -Project Project;
-	Remove-Migration -Context SqlServerDataProtectionContext -Force -Project Project;
+	Remove-Migration -Context SqliteDataProtectionContext -Force -Project Project -StartupProject Application;
+	Remove-Migration -Context SqlServerDataProtectionContext -Force -Project Project -StartupProject Application;
 	Write-Host "Removing current migrations-directory...";
 	Remove-Item "Project\Data\Migrations" -ErrorAction Ignore -Force -Recurse;
 	Write-Host "Creating migrations...";
-	Add-Migration SqliteDataProtectionContextMigration -Context SqliteDataProtectionContext -OutputDir Data/Migrations/Sqlite -Project Project;
-	Add-Migration SqlServerDataProtectionContextMigration -Context SqlServerDataProtectionContext -OutputDir Data/Migrations/SqlServer -Project Project;
+	Add-Migration SqliteDataProtectionContextMigration -Context SqliteDataProtectionContext -OutputDir Data/Migrations/Sqlite -Project Project -StartupProject Application;
+	Add-Migration SqlServerDataProtectionContextMigration -Context SqlServerDataProtectionContext -OutputDir Data/Migrations/SqlServer -Project Project -StartupProject Application;
 	Write-Host "Finnished";
 
 ##### 2.1.1.2 Update migrations
 
 	Write-Host "Updating migrations...";
-	Add-Migration SqliteCacheContextMigrationUpdate -Context SqliteDataProtectionContext -OutputDir Data/Migrations/Sqlite -Project Project;
-	Add-Migration SqlServerCacheContextMigrationUpdate -Context SqlServerDataProtectionContext -OutputDir Data/Migrations/SqlServer -Project Project;
+	Add-Migration SqliteCacheContextMigrationUpdate -Context SqliteDataProtectionContext -OutputDir Data/Migrations/Sqlite -Project Project -StartupProject Application;
+	Add-Migration SqlServerCacheContextMigrationUpdate -Context SqlServerDataProtectionContext -OutputDir Data/Migrations/SqlServer -Project Project -StartupProject Application;
 	Write-Host "Finnished";
 
 ### 2.3 Data-protection with Redis
