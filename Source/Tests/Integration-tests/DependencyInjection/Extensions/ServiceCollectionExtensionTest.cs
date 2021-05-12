@@ -111,49 +111,73 @@ namespace IntegrationTests.DependencyInjection.Extensions
 		[TestMethod]
 		public async Task AddDataProtection_Redis_Configuration_Certificate_Test()
 		{
-			await this.AddDataProtectionRedisTest(false, 22, KeyProtectionKind.Certificate);
+			await this.AddDataProtectionRedisTest(DataProtectionKind.RedisConfiguration, 22, KeyProtectionKind.Certificate);
 		}
 
 		[TestMethod]
 		public async Task AddDataProtection_Redis_Configuration_Dpapi_Test()
 		{
-			await this.AddDataProtectionRedisTest(false, 21, KeyProtectionKind.Dpapi);
+			await this.AddDataProtectionRedisTest(DataProtectionKind.RedisConfiguration, 21, KeyProtectionKind.Dpapi);
 		}
 
 		[TestMethod]
 		public async Task AddDataProtection_Redis_Configuration_DpapiNg_Test()
 		{
-			await this.AddDataProtectionRedisTest(false, 21, KeyProtectionKind.DpapiNg);
+			await this.AddDataProtectionRedisTest(DataProtectionKind.RedisConfiguration, 21, KeyProtectionKind.DpapiNg);
 		}
 
 		[TestMethod]
 		public async Task AddDataProtection_Redis_Configuration_Test()
 		{
-			await this.AddDataProtectionRedisTest(false, 20, null);
+			await this.AddDataProtectionRedisTest(DataProtectionKind.RedisConfiguration, 20, null);
 		}
 
 		[TestMethod]
 		public async Task AddDataProtection_Redis_ConfigurationOptions_Certificate_Test()
 		{
-			await this.AddDataProtectionRedisTest(true, 22, KeyProtectionKind.Certificate);
+			await this.AddDataProtectionRedisTest(DataProtectionKind.RedisConfigurationOptions, 22, KeyProtectionKind.Certificate);
 		}
 
 		[TestMethod]
 		public async Task AddDataProtection_Redis_ConfigurationOptions_Dpapi_Test()
 		{
-			await this.AddDataProtectionRedisTest(true, 21, KeyProtectionKind.Dpapi);
+			await this.AddDataProtectionRedisTest(DataProtectionKind.RedisConfigurationOptions, 21, KeyProtectionKind.Dpapi);
 		}
 
 		[TestMethod]
 		public async Task AddDataProtection_Redis_ConfigurationOptions_DpapiNg_Test()
 		{
-			await this.AddDataProtectionRedisTest(true, 21, KeyProtectionKind.DpapiNg);
+			await this.AddDataProtectionRedisTest(DataProtectionKind.RedisConfigurationOptions, 21, KeyProtectionKind.DpapiNg);
 		}
 
 		[TestMethod]
 		public async Task AddDataProtection_Redis_ConfigurationOptions_Test()
 		{
-			await this.AddDataProtectionRedisTest(true, 20, null);
+			await this.AddDataProtectionRedisTest(DataProtectionKind.RedisConfigurationOptions, 20, null);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Redis_ConnectionStringName_Certificate_Test()
+		{
+			await this.AddDataProtectionRedisTest(DataProtectionKind.RedisConnectionStringName, 22, KeyProtectionKind.Certificate);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Redis_ConnectionStringName_Dpapi_Test()
+		{
+			await this.AddDataProtectionRedisTest(DataProtectionKind.RedisConnectionStringName, 21, KeyProtectionKind.Dpapi);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Redis_ConnectionStringName_DpapiNg_Test()
+		{
+			await this.AddDataProtectionRedisTest(DataProtectionKind.RedisConnectionStringName, 21, KeyProtectionKind.DpapiNg);
+		}
+
+		[TestMethod]
+		public async Task AddDataProtection_Redis_ConnectionStringName_Test()
+		{
+			await this.AddDataProtectionRedisTest(DataProtectionKind.RedisConnectionStringName, 20, null);
 		}
 
 		[TestMethod]
@@ -223,11 +247,27 @@ namespace IntegrationTests.DependencyInjection.Extensions
 			await this.AddDataProtectionTest(sqlite ? DataProtectionKind.Sqlite : DataProtectionKind.SqlServer, expectedNumberOfServices, keyProtectionKind);
 		}
 
-		protected internal virtual async Task AddDataProtectionRedisTest(bool configurationOptions, int expectedNumberOfServices, KeyProtectionKind? keyProtectionKind)
+		//protected internal virtual async Task AddDataProtectionRedisTest(bool configurationOptions, int expectedNumberOfServices, KeyProtectionKind? keyProtectionKind)
+		//{
+		//	try
+		//	{
+		//		await this.AddDataProtectionTest(configurationOptions ? DataProtectionKind.RedisConfigurationOptions : DataProtectionKind.RedisConfiguration, expectedNumberOfServices, keyProtectionKind);
+		//	}
+		//	catch(InvalidOperationException invalidOperationException)
+		//	{
+		//		if(invalidOperationException.InnerException?.InnerException is RedisConnectionException)
+		//			Assert.Inconclusive($"You need to setup a Redis. You can do it with docker: \"docker run --rm -it -p 6379:6379 redis\". Exception: {invalidOperationException.InnerException.InnerException}");
+		//	}
+		//}
+
+		protected internal virtual async Task AddDataProtectionRedisTest(DataProtectionKind dataProtectionKind, int expectedNumberOfServices, KeyProtectionKind? keyProtectionKind)
 		{
+			if(dataProtectionKind is not (DataProtectionKind.RedisConfiguration or DataProtectionKind.RedisConfigurationOptions or DataProtectionKind.RedisConnectionStringName))
+				throw new ArgumentException($"Invalid data-protection-kind: {dataProtectionKind}", nameof(dataProtectionKind));
+
 			try
 			{
-				await this.AddDataProtectionTest(configurationOptions ? DataProtectionKind.RedisConfigurationOptions : DataProtectionKind.RedisConfiguration, expectedNumberOfServices, keyProtectionKind);
+				await this.AddDataProtectionTest(dataProtectionKind, expectedNumberOfServices, keyProtectionKind);
 			}
 			catch(InvalidOperationException invalidOperationException)
 			{
@@ -314,6 +354,7 @@ namespace IntegrationTests.DependencyInjection.Extensions
 				DataProtectionKind.FileSystem => typeof(FileSystemXmlRepository),
 				DataProtectionKind.RedisConfiguration => typeof(RedisXmlRepository),
 				DataProtectionKind.RedisConfigurationOptions => typeof(RedisXmlRepository),
+				DataProtectionKind.RedisConnectionStringName => typeof(RedisXmlRepository),
 				DataProtectionKind.Sqlite => typeof(EntityFrameworkCoreXmlRepository<DataProtectionContext>),
 				DataProtectionKind.SqlServer => typeof(EntityFrameworkCoreXmlRepository<DataProtectionContext>),
 				_ => null

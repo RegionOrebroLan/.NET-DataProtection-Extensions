@@ -13,6 +13,7 @@ Additions and extensions for .NET data-protection (ASP.NET Core).
 - [Azure](/Source/Sample/Application/appsettings.Azure.json) - the url is just an example
 - [FileSystem](/Source/Sample/Application/appsettings.FileSystem.json)
 - [Redis](/Source/Sample/Application/appsettings.Redis.json) - you need to setup Redis, see below
+- [Redis (connection-string)](/Source/Sample/Application/appsettings.RedisConnectionStringName.json) - || -
 - [Sqlite](/Source/Sample/Application/appsettings.Sqlite.json)
 - [SqlServer](/Source/Sample/Application/appsettings.SqlServer.json)
 

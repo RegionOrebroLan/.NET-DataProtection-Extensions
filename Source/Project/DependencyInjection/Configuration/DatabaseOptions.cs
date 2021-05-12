@@ -7,11 +7,11 @@ using RegionOrebroLan.DataProtection.Data;
 
 namespace RegionOrebroLan.DataProtection.DependencyInjection.Configuration
 {
-	public abstract class DatabaseOptions : DataProtectionOptions
+	public abstract class DatabaseOptions : ConnectionStringOptions
 	{
 		#region Properties
 
-		public virtual string ConnectionStringName { get; set; } = "Data-Protection";
+		public override string ConnectionStringName { get; set; } = "Data-Protection";
 		public virtual string MigrationsAssembly { get; set; }
 
 		#endregion

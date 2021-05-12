@@ -6,6 +6,7 @@ namespace IntegrationTests.Helpers
 		FileSystem,
 		RedisConfiguration,
 		RedisConfigurationOptions,
+		RedisConnectionStringName,
 		Sqlite,
 		SqlServer
 	}

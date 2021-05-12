@@ -6,7 +6,7 @@ using StackExchange.Redis;
 
 namespace RegionOrebroLan.DataProtection.DependencyInjection.Configuration
 {
-	public class RedisOptions : DataProtectionOptions
+	public class RedisOptions : ConnectionStringOptions
 	{
 		#region Properties
 
@@ -40,10 +40,10 @@ namespace RegionOrebroLan.DataProtection.DependencyInjection.Configuration
 			}
 			else
 			{
-				connectionMultiplexer = ConnectionMultiplexer.Connect(this.Configuration);
-			}
+				var configuration = this.Configuration ?? builder.Configuration.GetConnectionString(this.ConnectionStringName);
 
-			//this.ConfigurationOptions.ConnectRetry
+				connectionMultiplexer = ConnectionMultiplexer.Connect(configuration);
+			}
 
 			builder.PersistKeysToStackExchangeRedis(connectionMultiplexer, this.Key);
 		}
