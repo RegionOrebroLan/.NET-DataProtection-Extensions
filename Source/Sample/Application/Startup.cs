@@ -62,16 +62,11 @@ namespace Application
 
 		protected internal virtual ICertificateResolver CreateCertificateResolver()
 		{
-			var services = new ServiceCollection();
+			var applicationDomain = new ApplicationHost(AppDomain.CurrentDomain, this.HostEnvironment);
+			var fileCertificateResolver = new FileCertificateResolver(applicationDomain);
+			var storeCertificateResolver = new StoreCertificateResolver();
 
-			services.AddSingleton(AppDomain.CurrentDomain);
-			services.AddSingleton<FileCertificateResolver>();
-			services.AddSingleton(this.HostEnvironment);
-			services.AddSingleton<IApplicationDomain, ApplicationHost>();
-			services.AddSingleton<ICertificateResolver, CertificateResolver>();
-			services.AddSingleton<StoreCertificateResolver>();
-
-			return services.BuildServiceProvider().GetRequiredService<ICertificateResolver>();
+			return new CertificateResolver(fileCertificateResolver, storeCertificateResolver);
 		}
 
 		#endregion
