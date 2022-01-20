@@ -244,6 +244,10 @@ namespace IntegrationTests.DependencyInjection.Extensions
 
 		protected internal virtual async Task AddDataProtectionDatabaseTest(int expectedNumberOfServices, KeyProtectionKind? keyProtectionKind, bool sqlite)
 		{
+#if NET6_0_OR_GREATER
+			expectedNumberOfServices++;
+#endif
+
 			await this.AddDataProtectionTest(sqlite ? DataProtectionKind.Sqlite : DataProtectionKind.SqlServer, expectedNumberOfServices, keyProtectionKind);
 		}
 
@@ -369,7 +373,7 @@ namespace IntegrationTests.DependencyInjection.Extensions
 			if(Directory.Exists(directoryPath))
 				Directory.Delete(directoryPath, true);
 
-			foreach(var environment in new[] {"Sqlite", "SqlServer"})
+			foreach(var environment in new[] { "Sqlite", "SqlServer" })
 			{
 				var configuration = Global.CreateConfiguration("appsettings.json", $"appsettings.{environment}.json");
 				var services = Global.CreateServices(configuration);

@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 
 namespace RegionOrebroLan.DataProtection.DependencyInjection.Configuration.KeyProtection
 {
+#if NET5_0_OR_GREATER
+	[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
 	public class DpapiNgOptions : KeyProtectionOptions
 	{
 		#region Properties

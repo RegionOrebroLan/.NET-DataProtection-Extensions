@@ -1,11 +1,12 @@
 <Project>
 	<PropertyGroup>
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+		<AnalysisLevel>6</AnalysisLevel>
 		<AssemblyOriginatorKeyFile>$(SolutionDir).Global\Signing\StrongName.Development.snk</AssemblyOriginatorKeyFile>
 		<DelaySign>false</DelaySign>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<LangVersion>9.0</LangVersion>
+		<LangVersion>10.0</LangVersion>
 		<NoWarn>CA1014</NoWarn>
 		<SignAssembly>true</SignAssembly>
 	</PropertyGroup>

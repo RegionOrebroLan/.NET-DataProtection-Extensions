@@ -11,7 +11,7 @@
 		<Description>Additions and extensions for .NET data-protection (ASP.NET Core).</Description>
 		<FileVersion>$(VersionPrefix).0</FileVersion>
 		<RootNamespace>$(AssemblyName)</RootNamespace>
-		<TargetFramework>netstandard2.1</TargetFramework>
+		<TargetFrameworks>net6.0;netstandard2.1</TargetFrameworks>
 		<Version>$(VersionPrefix)</Version>
 		<Version Condition="$(VersionPrereleaseName) != ''">$(Version)-$(VersionPrereleaseName)</Version>
 	</PropertyGroup>
@@ -25,12 +25,12 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="3.1.22" />
-		<PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="5.0.13" />
-		<PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="5.0.13" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="$(PackageReferenceVersion)" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="$(PackageReferenceVersion)" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.13" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.13" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.13">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(PackageReferenceVersion)" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(PackageReferenceVersion)" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="$(PackageReferenceVersion)">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
